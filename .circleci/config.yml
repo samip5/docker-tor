@@ -4,14 +4,14 @@ executors:
   docker-build-machine:
     machine:
       image: ubuntu-1604:202004-01
-
-orbs:
-  docker-buildx: foodles/docker-buildx@0.0.1
 jobs:
   build:
     executor: docker-build-machine
     steps:
       - checkout
+      - run:
+          name: Update apt cache & upgrade
+          command: apt-get update && apt upgrade -y
       - run:
           name: Build Docker image
           command: make docker-build
