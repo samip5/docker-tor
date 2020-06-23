@@ -1,9 +1,17 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+executors:
+  my-executor:
+   machine:
+    image: ubuntu-1604:202004-01
+  my-classic-executor:
+   machine:
+    image: circleci/classic:201808-01
+
+
 jobs:
   build-arm64:
-    machine:
-     image: ubuntu-1604:202004-01
+    executor: my-executor
     steps:
       - checkout
       - run: 
@@ -18,8 +26,7 @@ jobs:
           paths:
             - ./image-arm64.tar
   build-amd64:
-    machine:
-     image: ubuntu-1604:202004-01
+    executor: my-executor
     steps:
       - checkout
       - run:
@@ -33,8 +40,7 @@ jobs:
           paths:
             - ./image.tar
   test-amd64:
-    machine:
-     image: ubuntu-1604:202004-01
+    executor: my-executor
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -48,9 +54,7 @@ jobs:
           name: Test Docker image
           command: make docker-test
   multiarch:
-    machine:
-     enabled: true
-     image: circleci/classic:201808-01
+    executor: my-classic-executor
     steps:
      - run:
           command: |
@@ -59,8 +63,7 @@ jobs:
             sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
             
   publish-dockerhub:
-    machine:
-     enabled: true
+    executor: my-executor
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -74,8 +77,7 @@ jobs:
           name: Push Docker image to Docker Hub
           command: make dockerhub-push
   publish-quay:
-    machine:
-     enabled: true
+    executor: my-executor
     steps:
       - attach_workspace:
           at: /tmp/workspace
