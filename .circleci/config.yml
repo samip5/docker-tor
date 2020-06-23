@@ -10,6 +10,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Prepare qemu
+          command: sudo ./prepare-qemu
+      - run:
           name: Create Docker buildx to use
           command: docker buildx create --use --platform linux/arm/v7,linux/arm64/v8,linux/amd64
       - run:
