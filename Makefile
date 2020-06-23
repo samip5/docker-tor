@@ -2,6 +2,8 @@ ALPINE_VERSION := latest
 DOCKER_ORGANIZATION := connectical
 DOCKER_IMAGE := tor
 DOCKER_IMAGE_FILENAME ?= $(DOCKER_ORGANIZATION)_$(DOCKER_IMAGE).tar
+DOCKER_ARCH=${BUILD_ARCH:-amd64}
+
 
 all: docker-build docker-test
 
@@ -22,7 +24,7 @@ ifndef QUAY_PASSWORD
 endif
 
 docker-build:
-	docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) .
+	docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --buld-arg ARCH=${DOCKER_ARCH} .
 
 docker-test:
 	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
