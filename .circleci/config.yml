@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-build-buster:
     docker:
-      - image: circleci/buildpack-deps:buster
+      - image: jdrouet/docker-with-buildx:stable
 
 jobs:
   build:
