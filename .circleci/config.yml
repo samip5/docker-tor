@@ -10,9 +10,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update apt cache & upgrade
-          command: apt-get update && apt upgrade -y
-      - run:
           name: Build Docker image
           command: make docker-build
       - run:
