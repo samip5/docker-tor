@@ -34,6 +34,10 @@ docker-test:
 	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
 	docker run --rm $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --version
 
+docker-save-arm64:
+	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):arm64 |grep -i "Arch"
+	docker save -o $(DOCKER_IMAGE_FILENAME) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):arm64
+
 docker-save:
 	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) |grep -i "Arch"
 	docker save -o $(DOCKER_IMAGE_FILENAME) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)

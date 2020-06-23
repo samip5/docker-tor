@@ -22,7 +22,7 @@ jobs:
           make docker-build-arm64
      - run:
           name: Save Docker image
-          command: DOCKER_IMAGE_FILENAME=image-arm64.tar make docker-save
+          command: DOCKER_IMAGE_FILENAME=image-arm64.tar make docker-save-arm64
      - persist_to_workspace:
           root: .
           paths:
