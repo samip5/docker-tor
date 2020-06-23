@@ -1,20 +1,27 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-executors:
-  docker-build-machine:
-    machine:
-      image: ubuntu-1604:202004-01
 jobs:
-  build:
-    executor: docker-build-machine
+  build-arm64:
+    machine:
+     enabled: true
+  steps:
+     - checkout
+     - run: 
+         command: | 
+           sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+           make docker-build
+     - run:
+          name: Save Docker image
+          command: DOCKER_IMAGE_FILENAME=image-arm64.tar make docker-save
+     - persist_to_workspace:
+          root: .
+          paths:
+            - ./image-arm64.tar
+  build-amd64:
+    machine:
+     enabled: true 
     steps:
       - checkout
-      - run:
-          name: Prepare qemu
-          command: sudo ./prepare-qemu
-      - run:
-          name: Create Docker buildx to use
-          command: docker buildx create --use --platform linux/arm/v7,linux/arm64/v8,linux/amd64
       - run:
           name: Build Docker image
           command: make docker-build
@@ -25,8 +32,9 @@ jobs:
           root: .
           paths:
             - ./image.tar
-  test:
-    executor: docker-build-machine
+  test-amd64:
+    machine:
+     enabled: true 
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -39,8 +47,20 @@ jobs:
       - run:
           name: Test Docker image
           command: make docker-test
+  multiarch:
+    machine:
+     enabled: true
+     image: circleci/classic:201808-01
+    steps:
+     - run:
+          command: |
+            # Turn on Experimental features
+            sudo mkdir $HOME/.docker
+            sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
+            
   publish-dockerhub:
-    executor: docker-build-machine
+    machine:
+     enabled: true
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -54,7 +74,8 @@ jobs:
           name: Push Docker image to Docker Hub
           command: make dockerhub-push
   publish-quay:
-    executor: docker-build-machine
+    machine:
+     enabled: true
     steps:
       - attach_workspace:
           at: /tmp/workspace
