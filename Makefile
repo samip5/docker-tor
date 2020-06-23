@@ -35,7 +35,7 @@ docker-test:
 	docker run --rm $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --version
 
 docker-save:
-	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) > /dev/null 2>&1
+	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) |grep -i "Arch"
 	docker save -o $(DOCKER_IMAGE_FILENAME) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
 
 docker-load:
