@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-arm64:
     machine:
-     enabled: true
+     image: ubuntu-1604:202004-01
     steps:
       - checkout
       - run: 
@@ -19,7 +19,7 @@ jobs:
             - ./image-arm64.tar
   build-amd64:
     machine:
-     enabled: true 
+     image: ubuntu-1604:202004-01
     steps:
       - checkout
       - run:
@@ -34,7 +34,7 @@ jobs:
             - ./image.tar
   test-amd64:
     machine:
-     enabled: true 
+     image: ubuntu-1604:202004-01
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -93,16 +93,17 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
+      - build-amd64
+      - build-arm64
       - test:
           requires:
-            - build
+            - build-amd64
       - publish-dockerhub:
           requires:
-            - test
+            - test-amd64
       - publish-quay:
           requires:
-            - test
+            - test-amd64
   nightly-build-deploy:
     triggers:
       - schedule:
@@ -112,13 +113,14 @@ workflows:
               only:
                 - master
     jobs:
-      - build
+      - build-amd64
+      - build-arm64
       - test:
           requires:
-            - build
+            - build-amd64
       - publish-dockerhub:
           requires:
-            - test
+            - test-amd64
       - publish-quay:
           requires:
-            - test
+            - test-amd64
