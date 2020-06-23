@@ -15,7 +15,7 @@ jobs:
     steps:
      - checkout
      - run: 
-       command: | 
+        command: | 
           sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
           make docker-build
      - run:
