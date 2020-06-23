@@ -1,7 +1,7 @@
 ARG ARCH=${BUILD_ARCH}
 ARG ALPINE_VERSION
 
-FROM ${ARCH}/alpine:${ALPINE_VERSION}
+FROM alpine:${ALPINE_VERSION}
 
 RUN apk -U --no-progress upgrade \
  && apk -U --no-progress add tor
