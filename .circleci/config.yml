@@ -17,7 +17,7 @@ jobs:
      - run: 
         command: | 
           sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
-          make docker-build
+          make docker-build-arm64
      - run:
           name: Save Docker image
           command: DOCKER_IMAGE_FILENAME=image-arm64.tar make docker-save
