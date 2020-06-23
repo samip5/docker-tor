@@ -12,11 +12,14 @@ executors:
 jobs:
   build-arm64:
     executor: my-executor
+    environment:
+     - BUILD_ARCH=arm64v8
     steps:
      - checkout
      - run: 
         command: | 
-          sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
+          pwd
+          
           make docker-build-arm64
      - run:
           name: Save Docker image
@@ -27,8 +30,14 @@ jobs:
             - ./image-arm64.tar
   build-amd64:
     executor: my-executor
+    environment:
+      - BUILD_ARCH=amd64
+      - BUILD_ARCH=arm32v7
     steps:
       - checkout
+      - run:
+          name: Prepare qemu
+          command: sudo chmod +x prepare-qemu && sudo ./prepare-qemu
       - run:
           name: Build Docker image
           command: make docker-build
