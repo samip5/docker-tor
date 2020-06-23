@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-build-buster:
     docker:
-      - image: jdrouet/docker-with-buildx:stable
+      - image: samip537/docker-with-buildx:latest
 
 jobs:
   build:
