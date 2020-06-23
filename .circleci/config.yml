@@ -18,8 +18,7 @@ jobs:
      - checkout
      - run: 
         command: | 
-          pwd
-          
+          pwd          
           make docker-build-arm64
      - run:
           name: Save Docker image
@@ -35,9 +34,9 @@ jobs:
       - BUILD_ARCH=arm32v7
     steps:
       - checkout
-      - run:
-          name: Prepare qemu
-          command: sudo chmod +x prepare-qemu && sudo ./prepare-qemu
+      #- run:
+      #    name: Prepare qemu
+      #    command: sudo chmod +x prepare-qemu && sudo ./prepare-qemu
       - run:
           name: Build Docker image
           command: make docker-build
