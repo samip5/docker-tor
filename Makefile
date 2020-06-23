@@ -27,7 +27,7 @@ docker-build:
 	docker build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) .
 
 docker-build-arm64:
-	uname -a
+	docker buildx create --use --platform linux/arm64
 	docker buildx build --platform linux/arm64 -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg ARCH=arm64 .
 
 docker-test:
