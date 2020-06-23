@@ -76,6 +76,20 @@ jobs:
       - run:
           name: Push Docker image to Docker Hub
           command: make dockerhub-push
+  publish-dockerhub-arm64:
+    executor: my-executor
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - setup_remote_docker:
+          version: 18.09.3
+      - run:
+          name: Load archived Docker image
+          command: DOCKER_IMAGE_FILENAME=/tmp/workspace/image-arm64.tar make docker-load
+      - run:
+          name: Push Docker image to Docker Hub
+          command: make dockerhub-push
   publish-quay:
     executor: my-executor
     steps:
@@ -103,6 +117,9 @@ workflows:
       - publish-dockerhub:
           requires:
             - test-amd64
+      - publish-dockerhub-arm64:
+          requires:
+            - build-arm64
       - publish-quay:
           requires:
             - test-amd64
@@ -123,6 +140,9 @@ workflows:
       - publish-dockerhub:
           requires:
             - test-amd64
+      - publish-dockerhub-arm64:
+          requires:
+            - build-arm64
       - publish-quay:
           requires:
             - test-amd64
