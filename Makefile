@@ -24,7 +24,7 @@ ifndef QUAY_PASSWORD
 endif
 
 docker-build:
-	docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --buld-arg ARCH=${DOCKER_ARCH} .
+	docker buildx build --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg ARCH=${DOCKER_ARCH} .
 
 docker-test:
 	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
