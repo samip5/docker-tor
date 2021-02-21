@@ -1,17 +1,14 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 executors:
-  my-executor:
-   machine:
-    image: ubuntu-1604:202004-01
-  my-classic-executor:
-   machine:
-    image: circleci/classic:201808-01
+  docker-build-buster:
+    docker:
+      - image: circleci/buildpack-deps:buster
 
 
 jobs:
   build-arm64:
-    executor: my-executor
+    executor: docker-build-buster
     environment:
      - BUILD_ARCH=arm64v8
     steps:
@@ -28,15 +25,15 @@ jobs:
           paths:
             - ./image-arm64.tar
   build-amd64:
-    executor: my-executor
+    executor: docker-build-buster
     environment:
       - BUILD_ARCH=amd64
       - BUILD_ARCH=arm32v7
     steps:
       - checkout
-      #- run:
-      #    name: Prepare qemu
-      #    command: sudo chmod +x prepare-qemu && sudo ./prepare-qemu
+      - run:
+          name: Prepare qemu
+          command: sudo chmod +x prepare-qemu && sudo ./prepare-qemu
       - run:
           name: Build Docker image
           command: make docker-build
@@ -48,7 +45,7 @@ jobs:
           paths:
             - ./image.tar
   test-amd64:
-    executor: my-executor
+    executor: docker-build-buster
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -60,7 +57,7 @@ jobs:
           name: Test Docker image
           command: make docker-test
   multiarch:
-    executor: my-classic-executor
+    executor: docker-build-buster
     steps:
      - run:
           command: |
@@ -69,13 +66,13 @@ jobs:
             sudo sh -c 'echo "{ \"experimental\": \"enabled\" }" >> $HOME/.docker/config.json'
             
   publish-dockerhub:
-    executor: my-executor
+    executor: docker-build-buster
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - checkout
       - setup_remote_docker:
-          version: 18.09.3
+          version: 20.10.3
       - run:
           name: Load archived Docker image
           command: DOCKER_IMAGE_FILENAME=/tmp/workspace/image.tar make docker-load
@@ -83,7 +80,7 @@ jobs:
           name: Push Docker image to Docker Hub
           command: make dockerhub-push
   publish-dockerhub-arm64:
-    executor: my-executor
+    executor: docker-build-buster
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -95,7 +92,7 @@ jobs:
           name: Push Docker image to Docker Hub
           command: make dockerhub-push
   publish-quay:
-    executor: my-executor
+    executor: docker-build-buster
     steps:
       - attach_workspace:
           at: /tmp/workspace
